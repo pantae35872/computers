@@ -1,0 +1,53 @@
+{
+	"credit": "Made with Blockbench",
+	"texture_size": [64, 64],
+	"textures": {
+		"0": "computers:block/computer",
+		"particle": "minecraft:block/obsidian"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 2],
+			"to": [16, 16, 14],
+			"faces": {
+				"north": {"uv": [3, 3, 7, 7], "texture": "#0"},
+				"east": {"uv": [0, 3, 3, 7], "texture": "#0"},
+				"south": {"uv": [10, 3, 14, 7], "texture": "#0"},
+				"west": {"uv": [7, 3, 10, 7], "texture": "#0"},
+				"up": {"uv": [7, 3, 3, 0], "texture": "#0"},
+				"down": {"uv": [11, 0, 7, 3], "texture": "#0"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [0, 180, 0],
+			"translation": [0, 3.75, 0],
+			"scale": [0.5, 0.5, 0.5]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [0, 180, 0],
+			"translation": [0, 4, -1.25],
+			"scale": [0.5, 0.5, 0.5]
+		},
+		"firstperson_righthand": {
+			"rotation": [-180, 3.25, -180],
+			"scale": [0.5, 0.5, 0.5]
+		},
+		"firstperson_lefthand": {
+			"rotation": [-180, 3.5, 180],
+			"scale": [0.5, 0.5, 0.5]
+		},
+		"ground": {
+			"scale": [0.3, 0.3, 0.3]
+		},
+		"gui": {
+			"rotation": [-155.74, 48.59, -0.37],
+			"scale": [0.7, 0.7, 0.7]
+		},
+		"head": {
+			"translation": [0, -0.5, -0.75]
+		}
+	}
+
+}
