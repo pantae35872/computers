@@ -4,7 +4,6 @@ import com.mojang.logging.LogUtils;
 import io.github.pantae35872.computers.networking.ModNetwork;
 import io.github.pantae35872.computers.registries.block.ModBlocks;
 import io.github.pantae35872.computers.registries.block_entity.ModBlockEntity;
-import io.github.pantae35872.computers.registries.block_entity.custom.ComputerBlockEntity;
 import io.github.pantae35872.computers.registries.creative_mode_tab.ModCreativeModeTab;
 import io.github.pantae35872.computers.registries.item.ModItems;
 import io.github.pantae35872.computers.registries.menutype.ModMenuTypes;
@@ -13,6 +12,7 @@ import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -61,6 +61,16 @@ public class Main {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
             MenuScreens.register(ModMenuTypes.COMPUTER.get(), ComputerScreen::new);
+        }
+    }
+
+    @Mod.EventBusSubscriber(modid = Main.MOD_ID, value = Dist.CLIENT)
+    public final class ForgeClientHooks {
+        public static int clientTick;
+
+        @SubscribeEvent
+        public static void onTick(TickEvent.ClientTickEvent event) {
+            if (event.phase == TickEvent.Phase.START) clientTick++;
         }
     }
 }

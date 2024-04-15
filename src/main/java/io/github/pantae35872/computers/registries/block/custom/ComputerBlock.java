@@ -5,6 +5,7 @@ import com.mojang.serialization.MapCodec;
 import io.github.pantae35872.computers.Main;
 import io.github.pantae35872.computers.registries.block_entity.ModBlockEntity;
 import io.github.pantae35872.computers.registries.block_entity.custom.ComputerBlockEntity;
+import net.minecraft.client.gui.screens.inventory.FurnaceScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -99,7 +100,6 @@ public class ComputerBlock extends BaseEntityBlock {
                 throw new IllegalStateException("Our Container provider is missing!");
             }
         }
-
         return InteractionResult.sidedSuccess(pLevel.isClientSide());
 
     }
