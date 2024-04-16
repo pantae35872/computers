@@ -116,7 +116,7 @@ public class ComputerBlockEntity extends BlockEntity implements MenuProvider {
 
     @Nullable
     @Override
-    public AbstractContainerMenu createMenu(int pContainerId, @NotNull Inventory pPlayerInventory, Player pPlayer) {
+    public AbstractContainerMenu createMenu(int pContainerId, @NotNull Inventory pPlayerInventory, @NotNull Player pPlayer) {
         ModNetwork.sendToClient(new ComputerBlockPosS2CPacket(this.getBlockPos()), PacketDistributor.PLAYER.with((ServerPlayer) pPlayer));
         isAccessing = true;
         return new ComputerMenu(pContainerId, pPlayerInventory, this, this.data);
@@ -138,7 +138,7 @@ public class ComputerBlockEntity extends BlockEntity implements MenuProvider {
     }
 
     @Override
-    public Component getDisplayName() {
+    public @NotNull Component getDisplayName() {
         return Component.translatable("block.computers.computer");
     }
 
@@ -149,7 +149,7 @@ public class ComputerBlockEntity extends BlockEntity implements MenuProvider {
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
+    public @NotNull CompoundTag getUpdateTag() {
         return saveWithFullMetadata();
     }
 

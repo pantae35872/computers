@@ -8,7 +8,6 @@ import io.github.pantae35872.computers.registries.creative_mode_tab.ModCreativeM
 import io.github.pantae35872.computers.registries.item.ModItems;
 import io.github.pantae35872.computers.registries.menutype.ModMenuTypes;
 import io.github.pantae35872.computers.registries.menutype.custom.ComputerScreen;
-import net.minecraft.client.MouseHandler;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -66,7 +65,7 @@ public class Main {
     }
 
     @Mod.EventBusSubscriber(modid = Main.MOD_ID, value = Dist.CLIENT)
-    public final class ForgeClientHooks {
+    public static final class ForgeClientHooks {
         public static int clientTick;
 
         @SubscribeEvent

@@ -75,7 +75,8 @@ public class ComputerBlock extends BaseEntityBlock {
     }
 
     @Override
-    public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pMovedByPiston) {
+    public void onRemove(BlockState pState, @NotNull Level pLevel, @NotNull BlockPos pPos,
+                         BlockState pNewState, boolean pMovedByPiston) {
         if (pState.getBlock() != pNewState.getBlock()) {
             BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
             if (blockEntity instanceof ComputerBlockEntity computerBlockEntity) {
@@ -87,7 +88,9 @@ public class ComputerBlock extends BaseEntityBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
+    public @NotNull InteractionResult use(@NotNull BlockState pState, Level pLevel,
+                                          @NotNull BlockPos pPos, @NotNull Player pPlayer,
+                                          @NotNull InteractionHand pHand, @NotNull BlockHitResult pHit) {
         if (!pLevel.isClientSide()) {
             BlockEntity entity = pLevel.getBlockEntity(pPos);
             if(entity instanceof ComputerBlockEntity blockEntity) {
@@ -129,8 +132,6 @@ public class ComputerBlock extends BaseEntityBlock {
             return null;
         }
         return createTickerHelper(pBlockEntityType, ModBlockEntity.COMPUTER.get(),
-                ((pLevel1, pPos, pState1, pBlockEntity) -> {
-                   pBlockEntity.tick(pLevel1, pPos, pState1);
-                }));
+                ((pLevel1, pPos, pState1, pBlockEntity) -> pBlockEntity.tick(pLevel1, pPos, pState1)));
     }
 }

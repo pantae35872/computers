@@ -4,9 +4,6 @@ import io.github.pantae35872.computers.Main;
 import io.github.pantae35872.computers.registries.menutype.custom.widgets.ComputerWidget;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
 
 import static io.github.pantae35872.computers.registries.menutype.custom.widgets.ComputerWidget.*;
 
@@ -17,7 +14,6 @@ public class Editor {
     static final float WIDTH = 256.0f;
     private final int innerX;
     private final int innerY;
-    private final Queue<Integer> moveQueue;
     private int cursor = 0;
     private int offset = 0;
 
@@ -27,7 +23,6 @@ public class Editor {
         this.buffer = new ArrayList<>();
         this.innerX = innerX;
         this.innerY = innerY;
-        moveQueue = new LinkedList<>();
     }
 
     public void keyPress(byte character) {

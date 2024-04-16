@@ -14,16 +14,13 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
-
-import java.util.logging.Logger;
-
 public class ComputerWidget extends AbstractWidget {
     public static final ResourceLocation FONT = new ResourceLocation(Main.MOD_ID, "textures/gui/term_font.png");
     private final int innerX;
     private final int innerY;
     private final Editor editor;
-    private boolean isSelecting = false;
     public boolean isShifting = false;
     public boolean isCaps = false;
     public ComputerWidget(int pX, int pY, int pWidth, int pHeight, Component pMessage, Editor editor) {
@@ -44,13 +41,7 @@ public class ComputerWidget extends AbstractWidget {
     public static final int FONT_WIDTH = 6;
 
     @Override
-    public void onClick(double pMouseX, double pMouseY) {
-        this.isSelecting = true;
-        //super.onClick(pMouseX, pMouseY);
-    }
-
-    @Override
-    public void playDownSound(SoundManager pHandler) {
+    public void playDownSound(@NotNull SoundManager pHandler) {
         //super.playDownSound(pHandler);
     }
 
@@ -161,7 +152,7 @@ public class ComputerWidget extends AbstractWidget {
     }
 
     @Override
-    protected void updateWidgetNarration(NarrationElementOutput pNarrationElementOutput) {
+    protected void updateWidgetNarration(@NotNull NarrationElementOutput pNarrationElementOutput) {
 
     }
 
