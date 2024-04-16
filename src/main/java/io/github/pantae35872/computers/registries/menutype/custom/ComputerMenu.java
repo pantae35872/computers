@@ -41,13 +41,13 @@ public class ComputerMenu extends AbstractContainerMenu {
         this.inv = inv;
         this.data = simpleContainerData;
 
-        addPlayerHotbar(inv);
+        /*addPlayerHotbar(inv);
         addPlayerInventory(inv);
 
         this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(iItemHandler -> {
             this.addSlot(new SlotItemHandler(iItemHandler, 0, 80, 11));
             this.addSlot(new SlotItemHandler(iItemHandler, 1, 80, 59));
-        });
+        });*/
 
         addDataSlots(data);
     }

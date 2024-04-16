@@ -11,6 +11,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.joml.Matrix4f;
@@ -55,9 +56,13 @@ public class ComputerWidget extends AbstractWidget {
     @Override
     public void onClick(double pMouseX, double pMouseY) {
         this.isSelecting = true;
-        super.onClick(pMouseX, pMouseY);
+        //super.onClick(pMouseX, pMouseY);
     }
 
+    @Override
+    public void playDownSound(SoundManager pHandler) {
+        //super.playDownSound(pHandler);
+    }
 
     @Override
     public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {

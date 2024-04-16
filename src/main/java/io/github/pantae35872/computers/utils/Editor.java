@@ -11,7 +11,7 @@ import java.util.Queue;
 import static io.github.pantae35872.computers.registries.menutype.custom.widgets.ComputerWidget.*;
 
 public class Editor {
-    private final List<Byte> buffer;
+    private final ArrayList<Byte> buffer;
     private final int row;
     private final int column;
     static final float WIDTH = 256.0f;
@@ -19,6 +19,7 @@ public class Editor {
     private final int innerY;
     private final Queue<Integer> moveQueue;
     private int cursor = 0;
+    private int offset = 0;
 
     public Editor(int row, int column, int innerX, int innerY) {
         this.row = row;
@@ -50,49 +51,90 @@ public class Editor {
         renderText(emitter);
     }
 
-    public void checkColumn(int column) {
-        if (this.column > column) {
+    private record RenderStatus(int leftover, int readAmount){
+    }
 
+    private RenderStatus renderRow(ComputerWidget.QuadEmitter emitter,
+                         int start, int leftover, int currentColumn, ArrayList<Byte> buffer, int offset, boolean simulate) {
+        int currentRow = leftover;
+        int i;
+        for (i = 0; i < row; i++) {
+            int readPos = start + i;
+            if (readPos > buffer.size() - 1) break;
+            if (currentRow >= row) break;
+
+            Byte character = buffer.get(readPos);
+
+            if (cursor == readPos) {
+                if ((Main.ForgeClientHooks.clientTick / 8) % 2 == 0) {
+                    if (offset + currentColumn * FONT_HEIGHT > (column - 3) * FONT_HEIGHT) {
+                        this.offset++;
+                    } else if (offset + currentColumn * FONT_HEIGHT < 0) {
+                        this.offset--;
+                    }
+                    if (!simulate) {
+                        renderChar(emitter, currentRow * FONT_WIDTH, offset + currentColumn * FONT_HEIGHT, '_');
+                    }
+                }
+            }
+            if (character == '\n') {
+                return new RenderStatus(
+                        -1, i);
+            }
+            if (character == 9) {
+                currentRow+=4;
+                if (currentRow >= row) {
+                    return new RenderStatus(currentRow - row
+                    , i + 1);
+                }
+            }
+
+            if (!simulate) {
+                renderChar(emitter, currentRow * FONT_WIDTH,
+                        offset + currentColumn * FONT_HEIGHT, character);
+            }
+
+
+            if (character != 9) currentRow++;
+        }
+        if (start + i > buffer.size() - 1) {
+            return new RenderStatus(
+                    -2, i);
+        } else {
+            return new RenderStatus(
+                    -1, i - 1);
         }
     }
 
+    @SuppressWarnings("unchecked")
     public void renderText(ComputerWidget.QuadEmitter emitter) {
+
+        int leftover = 0;
         int currentColumn = 0;
-        int currentRow = 0;
-
-        // TODO: Add text scrolling
-
-        for (int i = 0; i <= buffer.size(); i++) {
-            Byte character = (byte)255;
-            if (i < buffer.size()) {
-                character = buffer.get(i);
+        int readPos = 0;
+        ArrayList<Byte> buffer = (ArrayList<Byte>) this.buffer.clone();
+        buffer.add((byte) 0);
+        do {
+            RenderStatus status;
+            int offset = -FONT_HEIGHT * this.offset;
+            int y_level = offset + currentColumn * FONT_HEIGHT;
+            if (y_level < 0 || y_level > (column - 3) * FONT_HEIGHT) {
+                status = renderRow(emitter, readPos,
+                        leftover, currentColumn, buffer, offset, true);
+            } else {
+                status = renderRow(emitter, readPos,
+                        leftover, currentColumn, buffer, offset, false);
             }
-            if (currentRow >= row) {
-                currentRow = 0;
+            if (status.leftover() == -1) {
                 currentColumn++;
+                leftover = 0;
+                readPos++;
+            } else {
+                leftover = status.leftover();
             }
-            if (character == 9) {
-                currentRow += 4;
-                int leftover = currentRow - row;
-                if (leftover > 0) {
-                    currentRow = leftover - 1;
-                    currentColumn++;
-                }
-            }
-            renderChar(emitter, currentRow * FONT_WIDTH, currentColumn * FONT_HEIGHT, character);
-
-            if (i == cursor) {
-                if ((Main.ForgeClientHooks.clientTick / 8) % 2 == 0) {
-                    renderChar(emitter, currentRow * FONT_WIDTH, currentColumn * FONT_HEIGHT, '_');
-                }
-            }
-
-            if (character == 0xA) {
-                currentRow = 0;
-                currentColumn++;
-            }
-            if (character != 0xA) currentRow++;
-        }
+            if (status.leftover() != -1) currentColumn++;
+            readPos += status.readAmount();
+        } while (leftover != -2);
     }
 
     public void renderChar(ComputerWidget.QuadEmitter emitter, int x, int y, int index) {
@@ -121,7 +163,7 @@ public class Editor {
             //UP
             case 3 -> {
                 int topRow = getTopRow();
-                if (cursor - topRow > 0) {
+                if (cursor - topRow >= 0) {
                     cursor -= topRow;
                 }
             }
@@ -169,7 +211,7 @@ public class Editor {
                     default -> currentRow++;
                 }
             } catch (Exception ignored) {
-                return currentRow - 1;
+                return currentRow;
             }
         }
         return currentRow;
@@ -191,12 +233,16 @@ public class Editor {
 
         for (i = 1; i < row; i++) {
             try {
+                byte character = buffer.get(cursor - i);
                 if (currentRow >= (flag ? row - 1 : row) && buffer.get(cursor) != 9) {
                     return i - 1;
-                } else if (currentRow > row) {
-                    return i - 1;
+                } else if (currentRow > (flag ? row - 1 : row)){
+                    character = buffer.get(cursor - i + 1);
+                    if (character == 9) {
+                        return i - 1;
+                    }
+                    return i + 2;
                 }
-                byte character = buffer.get(cursor - i);
                 switch (character) {
                     case 0xA -> {
                         int first_char = first_char(cursor - i);
