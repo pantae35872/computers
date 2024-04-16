@@ -37,6 +37,10 @@ public class Editor {
         }
     }
 
+    public void forward_delete() {
+        if (cursor < buffer.size()) buffer.remove(cursor);
+    }
+
     public void pressNewLine() {
         buffer.add(cursor,(byte) '\n');
         cursor++;

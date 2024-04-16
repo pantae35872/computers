@@ -50,6 +50,11 @@ public class ComputerWidget extends AbstractWidget {
         if (pKeyCode <= 265 && pKeyCode >= 262) {
             editor.move(pKeyCode - 262);
         }
+
+        if (pKeyCode == 261) {
+            editor.forward_delete();
+        }
+
         if (pKeyCode == 340) {
             isShifting = true;
             return true;

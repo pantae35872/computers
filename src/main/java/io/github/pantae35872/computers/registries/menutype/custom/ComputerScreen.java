@@ -24,7 +24,7 @@ public class ComputerScreen extends AbstractContainerScreen<ComputerMenu> {
         super(pMenu, pPlayerInventory, pTitle);
     }
 
-    public static final int TERMINAL_WIDTH = 250;
+    public static final int TERMINAL_WIDTH = 270;
     public static final int TERMINAL_HEIGHT = 210;
 
     @Override
