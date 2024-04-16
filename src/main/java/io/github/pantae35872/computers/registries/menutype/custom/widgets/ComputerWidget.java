@@ -33,20 +33,10 @@ public class ComputerWidget extends AbstractWidget {
         this.editor = editor;
     }
     static final float WIDTH = 256.0f;
-    static final float BACKGROUND_START = (WIDTH - 6.0f) / WIDTH;
-    static final float BACKGROUND_END = (WIDTH - 4.0f) / WIDTH;
-    private static final byte[] BLACK = new byte[]{
-            byteColour(Color.BLACK.getR()), byteColour(Color.BLACK.getR()),
-            byteColour(Color.BLACK.getR()), (byte) 255 };
-    public static final byte[] WHITE = new byte[]{
-            byteColour(Color.WHITE.getR()), byteColour(Color.WHITE.getR()),
-            byteColour(Color.WHITE.getR()), (byte) 255 };
+    public static final float BACKGROUND_START = (WIDTH - 6.0f) / WIDTH;
+    public static final float BACKGROUND_END = (WIDTH - 4.0f) / WIDTH;
     public static final int FULL_BRIGHT_LIGHTMAP = (0xF << 4) | (0xF << 20);
 
-
-    private static byte byteColour(float c) {
-        return (byte) (int) (c * 255);
-    }
 
     public record QuadEmitter(Matrix4f poseMatrix, VertexConsumer consumer) {
     }
@@ -160,24 +150,9 @@ public class ComputerWidget extends AbstractWidget {
         bufferSource.endBatch();
     }
 
-    public void renderChar(QuadEmitter emitter, int x, int y, int index) {
-
-        var column = index % 16;
-        var row = index / 16;
-
-        var xStart = 1 + column * (FONT_WIDTH + 2);
-        var yStart = 1 + row * (FONT_HEIGHT + 2);
-
-        quad(
-                emitter, innerX + x, innerY + y, innerX + x + FONT_WIDTH, innerY + y + FONT_HEIGHT, 0, WHITE,
-                xStart / WIDTH, yStart / WIDTH, (xStart + FONT_WIDTH) / WIDTH, (yStart + FONT_HEIGHT) / WIDTH,
-                FULL_BRIGHT_LIGHTMAP
-        );
-    }
-
 
     public static void drawEmptyTerminal(QuadEmitter emitter, float x, float y, float width, float height) {
-        drawQuad(emitter, x, y, 0, width, height, BLACK, FULL_BRIGHT_LIGHTMAP);
+        drawQuad(emitter, x, y, 0, width, height, Color.BLACK.rgba(), FULL_BRIGHT_LIGHTMAP);
     }
 
 

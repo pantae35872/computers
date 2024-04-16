@@ -20,7 +20,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -50,6 +49,7 @@ public class ComputerBlockEntity extends BlockEntity implements MenuProvider {
 
     protected final ContainerData data;
     private final Emulator emulator;
+    private boolean isAccessing;
 
     public ComputerBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(ModBlockEntity.COMPUTER.get(), pPos, pBlockState);
@@ -69,6 +69,10 @@ public class ComputerBlockEntity extends BlockEntity implements MenuProvider {
                 return 2;
             }
         };
+    }
+
+    public boolean isAccessing() {
+        return this.isAccessing;
     }
 
     @Override
@@ -114,6 +118,7 @@ public class ComputerBlockEntity extends BlockEntity implements MenuProvider {
     @Override
     public AbstractContainerMenu createMenu(int pContainerId, @NotNull Inventory pPlayerInventory, Player pPlayer) {
         ModNetwork.sendToClient(new ComputerBlockPosS2CPacket(this.getBlockPos()), PacketDistributor.PLAYER.with((ServerPlayer) pPlayer));
+        isAccessing = true;
         return new ComputerMenu(pContainerId, pPlayerInventory, this, this.data);
     }
 
@@ -146,5 +151,9 @@ public class ComputerBlockEntity extends BlockEntity implements MenuProvider {
     @Override
     public CompoundTag getUpdateTag() {
         return saveWithFullMetadata();
+    }
+
+    public void clientClose() {
+        isAccessing = false;
     }
 }

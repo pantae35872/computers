@@ -1,3 +1,4 @@
 {
-  "block.computers.computer": "Computer"
+  "block.computers.computer": "Computer",
+  "gui.computers.computer.occupy": "Another player is accessing the computer. Try again later"
 }

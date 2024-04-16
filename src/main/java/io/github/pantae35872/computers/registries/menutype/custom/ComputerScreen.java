@@ -2,6 +2,8 @@ package io.github.pantae35872.computers.registries.menutype.custom;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.pantae35872.computers.Main;
+import io.github.pantae35872.computers.networking.ModNetwork;
+import io.github.pantae35872.computers.networking.packet.ComputerCloseC2SPacket;
 import io.github.pantae35872.computers.registries.menutype.custom.widgets.ComputerWidget;
 import io.github.pantae35872.computers.utils.Editor;
 import net.minecraft.client.gui.ComponentPath;
@@ -41,6 +43,13 @@ public class ComputerScreen extends AbstractContainerScreen<ComputerMenu> {
                 new Editor(TERMINAL_WIDTH / FONT_WIDTH, 25, x+ 2, y + 2)));
         setFocused(computerWidget);
     }
+
+    @Override
+    public void onClose() {
+        ModNetwork.sendToServer(new ComputerCloseC2SPacket((menu.blockEntity.getBlockPos())));
+        super.onClose();
+    }
+
     @Override
     protected void renderBg(GuiGraphics pGuiGraphics, float pPartialTick, int pMouseX, int pMouseY) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -53,6 +62,18 @@ public class ComputerScreen extends AbstractContainerScreen<ComputerMenu> {
         //pGuiGraphics.blit(TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
         //pGuiGraphics.flush();
     }
+
+
+    @Override
+    protected void containerTick() {
+        super.containerTick();
+        assert this.minecraft != null;
+        assert this.minecraft.player != null;
+        if (this.minecraft.player.position().distanceTo(menu.blockEntity.getBlockPos().getCenter()) > 5) {
+            this.onClose();
+        }
+    }
+
     @Override
     public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         //renderBackground(guiGraphics, mouseX, mouseY, delta);

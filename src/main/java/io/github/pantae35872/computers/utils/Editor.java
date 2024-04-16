@@ -65,6 +65,7 @@ public class Editor {
 
             Byte character = buffer.get(readPos);
 
+            boolean renderCursor = false;
             if (cursor == readPos) {
                 if ((Main.ForgeClientHooks.clientTick / 8) % 2 == 0) {
                     if (offset + currentColumn * FONT_HEIGHT > (column - 3) * FONT_HEIGHT) {
@@ -72,16 +73,22 @@ public class Editor {
                     } else if (offset + currentColumn * FONT_HEIGHT < 0) {
                         this.offset--;
                     }
-                    if (!simulate) {
-                        renderChar(emitter, currentRow * FONT_WIDTH, offset + currentColumn * FONT_HEIGHT, '_');
-                    }
+                    renderCursor = true;
                 }
             }
             if (character == '\n') {
+                if (cursor == readPos && renderCursor) {
+                    drawQuad(emitter, currentRow * FONT_WIDTH, offset + currentColumn * FONT_HEIGHT,
+                            0, 1, FONT_HEIGHT, Color.ORANGE.rgba(), FULL_BRIGHT_LIGHTMAP);
+                }
                 return new RenderStatus(
                         -1, i);
             }
             if (character == 9) {
+                if (!simulate && renderCursor) {
+                    drawQuad(emitter, currentRow * FONT_WIDTH, offset + currentColumn * FONT_HEIGHT,
+                            0, 1, FONT_HEIGHT, Color.ORANGE.rgba(), FULL_BRIGHT_LIGHTMAP);
+                }
                 currentRow+=4;
                 if (currentRow >= row) {
                     return new RenderStatus(currentRow - row
@@ -91,7 +98,12 @@ public class Editor {
 
             if (!simulate) {
                 renderChar(emitter, currentRow * FONT_WIDTH,
-                        offset + currentColumn * FONT_HEIGHT, character);
+                        offset + currentColumn * FONT_HEIGHT, character, Color.WHITE.rgba());
+            }
+
+            if (!simulate && renderCursor && character != 9) {
+                drawQuad(emitter, currentRow * FONT_WIDTH, offset + currentColumn * FONT_HEIGHT,
+                        0, 1, FONT_HEIGHT, Color.ORANGE.rgba(), FULL_BRIGHT_LIGHTMAP);
             }
 
 
@@ -137,7 +149,7 @@ public class Editor {
         } while (leftover != -2);
     }
 
-    public void renderChar(ComputerWidget.QuadEmitter emitter, int x, int y, int index) {
+    public void renderChar(ComputerWidget.QuadEmitter emitter, int x, int y, int index, byte[] rgba) {
 
         var column = index % 16;
         var row = index / 16;
@@ -146,10 +158,14 @@ public class Editor {
         var yStart = 1 + row * (FONT_HEIGHT + 2);
 
         quad(
-                emitter, innerX + x, innerY + y, innerX + x + FONT_WIDTH, innerY + y + FONT_HEIGHT, 0, WHITE,
+                emitter, innerX + x, innerY + y, innerX + x + FONT_WIDTH, innerY + y + FONT_HEIGHT, 0, rgba,
                 xStart / WIDTH, yStart / WIDTH, (xStart + FONT_WIDTH) / WIDTH, (yStart + FONT_HEIGHT) / WIDTH,
                 FULL_BRIGHT_LIGHTMAP
         );
+    }
+
+    public void drawQuad(QuadEmitter emitter, float x, float y, float z, float width, float height, byte[] colour, int light) {
+        quad(emitter, this.innerX + x, this.innerY+y, this.innerX + x + width, this.innerY+y + height, z, colour, BACKGROUND_START, BACKGROUND_START, BACKGROUND_END, BACKGROUND_END, light);
     }
 
     public void tab() {

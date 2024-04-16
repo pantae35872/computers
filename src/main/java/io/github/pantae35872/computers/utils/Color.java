@@ -68,4 +68,13 @@ public enum Color {
     public float getB() {
         return blue;
     }
+
+    public byte[] rgba() {
+        return new byte[]{
+                byteColour(this.getR()), byteColour(this.getG()),
+                byteColour(this.getB()), (byte) 255 };
+    }
+    private static byte byteColour(float c) {
+        return (byte) (int) (c * 255);
+    }
 }

@@ -2,6 +2,7 @@ package io.github.pantae35872.computers.networking;
 
 import io.github.pantae35872.computers.Main;
 import io.github.pantae35872.computers.networking.packet.ComputerBlockPosS2CPacket;
+import io.github.pantae35872.computers.networking.packet.ComputerCloseC2SPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.ChannelBuilder;
@@ -24,6 +25,12 @@ public class ModNetwork {
                 .decoder(ComputerBlockPosS2CPacket::new)
                 .encoder(ComputerBlockPosS2CPacket::encode)
                 .consumerMainThread(ComputerBlockPosS2CPacket::receive)
+                .add();
+
+        CHANNEL.messageBuilder(ComputerCloseC2SPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
+                .decoder(ComputerCloseC2SPacket::new)
+                .encoder(ComputerCloseC2SPacket::encode)
+                .consumerMainThread(ComputerCloseC2SPacket::receive)
                 .add();
     }
 

@@ -1,14 +1,11 @@
 package io.github.pantae35872.computers.registries.block.custom;
 
-import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.MapCodec;
-import io.github.pantae35872.computers.Main;
 import io.github.pantae35872.computers.registries.block_entity.ModBlockEntity;
 import io.github.pantae35872.computers.registries.block_entity.custom.ComputerBlockEntity;
-import net.minecraft.client.gui.screens.inventory.FurnaceScreen;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -20,7 +17,6 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.entity.CommandBlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -35,7 +31,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
-import java.util.function.Function;
 
 @SuppressWarnings("deprecation")
 public class ComputerBlock extends BaseEntityBlock {
@@ -44,7 +39,8 @@ public class ComputerBlock extends BaseEntityBlock {
     public static final MapCodec<FurnaceBlock> CODEC = simpleCodec(FurnaceBlock::new);
 
     public ComputerBlock() {
-        super(BlockBehaviour.Properties.of().noOcclusion());
+        super(BlockBehaviour.Properties.of().noOcclusion()
+                );
     }
 
     @Nullable
@@ -94,8 +90,15 @@ public class ComputerBlock extends BaseEntityBlock {
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
         if (!pLevel.isClientSide()) {
             BlockEntity entity = pLevel.getBlockEntity(pPos);
-            if(entity instanceof ComputerBlockEntity) {
-                pPlayer.openMenu((MenuProvider) entity);
+            if(entity instanceof ComputerBlockEntity blockEntity) {
+                if (!blockEntity.isAccessing()) {
+                    pPlayer.openMenu((MenuProvider) entity);
+                } else {
+                    pPlayer.displayClientMessage(net.minecraft.network.chat.Component.
+                                    translatable("gui.computers.computer.occupy").withStyle(ChatFormatting.DARK_RED).
+                                    withStyle(ChatFormatting.BOLD)
+                            , true);
+                }
             } else {
                 throw new IllegalStateException("Our Container provider is missing!");
             }
